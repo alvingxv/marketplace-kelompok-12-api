@@ -61,6 +61,28 @@ db.add_product = (productname, productprice, productqty, productseller) => {
     });
 };
 
+db.update_qty = (productname, productqty, productseller) => {
+    return new Promise((resolve, reject) => {
+        pool.query('UPDATE product SET product_qty = ? WHERE product_name = ? AND product_seller = ?', [productqty, productname, productseller], (error, result) => {
+            if (result.affectedRows == 0) {
+                return reject(error);
+            }
+            return resolve();
+        });
+    });
+};
+
+db.update_price = (productname, productprice, productseller) => {
+    return new Promise((resolve, reject) => {
+        pool.query('UPDATE product SET product_price = ? WHERE product_name = ? AND product_seller = ?', [productprice, productname, productseller], (error, result) => {
+            if (result.affectedRows == 0) {
+                return reject(error);
+            }
+            return resolve();
+        });
+    });
+};
+
 db.check_productname = (productname) => {
     return new Promise((resolve, reject) => {
         let replacement = `'%${productname}%'`;
@@ -74,19 +96,6 @@ db.check_productname = (productname) => {
     });
 };
 
-db.updateUser = (username, role, email, password, id, nomor_hp) => {
-    return new Promise((resolve, reject) => {
-        pool.query('UPDATE users SET username = ?, role= ?, email= ?, password=?, nomor_hp=? WHERE id_user = ?', [username, role, email, password, nomor_hp, id], (error) => {
-            if (error) {
-                return reject(error);
-            }
-
-            return resolve();
-        });
-    });
-};
-
-
 
 db.delete_user = (number) => {
     return new Promise((resolve, reject) => {
@@ -99,44 +108,17 @@ db.delete_user = (number) => {
     });
 };
 
-db.topupuser = (nominal, userId) => {
+db.search_product = (searchterm) => {
     return new Promise((resolve, reject) => {
-        pool.query('UPDATE users SET balance = balance + ? WHERE id_user = ?', [nominal, userId], (error) => {
-            if (error) {
+        let replacement = `'%${searchterm}%'`;
+        let sqlStatement = `SELECT product_name, product_price, product_qty, product_seller from  product where product_name LIKE ${replacement}`;
+        pool.query(sqlStatement, (error, product) => {
+            if (product.length == 0) {
                 return reject(error);
             }
-
-            return resolve();
+            return resolve(product);
         });
     });
 };
-
-db.deductpengirim = (nominal, idpengirim) => {
-    return new Promise((resolve, reject) => {
-        pool.query('UPDATE users SET balance = balance - ? WHERE id_user = ?', [nominal, idpengirim], (error) => {
-            if (error) {
-                return reject(error);
-            }
-
-            return resolve();
-        });
-    });
-};
-
-db.addpenerima = (nominal, nomortujuan) => {
-    return new Promise((resolve, reject) => {
-        pool.query('UPDATE users SET balance = balance + ? WHERE nomor_hp = ?', [nominal, nomortujuan], (error) => {
-            if (error) {
-                return reject(error);
-            }
-
-            return resolve();
-        });
-    });
-};
-
-
-
-
 
 module.exports = db
