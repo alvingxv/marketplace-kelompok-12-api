@@ -65,19 +65,16 @@ exports.update_product = async (req, res, next) => {
         }
 
         if (productprice && !productqty) {
-            console.log("update price");
             await db.update_price(productname, productprice, productseller);
             return res.status(200).json({
                 status: 200, message: "Product Price updated"
             });
         } else if (productqty && !productprice) {
-            console.log("update qty");
             await db.update_qty(productname, productqty, productseller);
             return res.status(200).json({
                 status: 200, message: "Product Qty updated"
             });
         } else if (productqty && productprice) {
-            console.log("update both");
             await db.update_price(productname, productprice, productseller);
             await db.update_qty(productname, productqty, productseller);
             return res.status(200).json({
