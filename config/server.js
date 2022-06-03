@@ -15,7 +15,7 @@ app.use(cors());
 
 app.get('/', (req, res) => {
     res.status(200).json({
-        status: 200, message: "Haloooooo"
+        message: "Haloooooo, buka https://gist.github.com/alvingxv/e716f6b922974c2fafe54e2c3cc22b6f buat dokumentasi yaaaa :D"
     });
 });
 
