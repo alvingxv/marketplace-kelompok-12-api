@@ -13,6 +13,12 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
+app.get('/', (req, res) => {
+    res.status(200).json({
+        status: 200, message: "Haloooooo"
+    });
+});
+
 app.use('/api', api)
 
 app.listen(PORT, () => {
