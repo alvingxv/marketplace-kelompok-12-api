@@ -9,7 +9,7 @@ async function verifyTokenAdmin(req, res, next) {
             message: "Access Denied! Unauthorized User",
         });
     } else {
-        jsonwebtoken.verify(token, "inikey", (err, authData) => {
+        jsonwebtoken.verify(token, process.env.SECRET_KEY, (err, authData) => {
             if (err) {
                 res.json({
                     message: "Invalid Token...",
@@ -37,7 +37,7 @@ async function verifyToken(req, res, next) {
             message: "Access Denied! Unauthorized User",
         });
     } else {
-        jsonwebtoken.verify(token, "inikey", (err, authData) => {
+        jsonwebtoken.verify(token, process.env.SECRET_KEY, (err, authData) => {
             if (err) {
                 res.json({
                     message: "Invalid Token...",

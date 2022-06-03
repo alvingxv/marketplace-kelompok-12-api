@@ -96,6 +96,17 @@ db.check_productname = (productname) => {
     });
 };
 
+db.check_productavail = (productname) => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT * from product where product_name = ? ', [productname], (error, product) => {
+            if (error) {
+                return reject(error);
+            }
+            return resolve(product);
+        });
+    });
+};
+
 
 db.delete_user = (number) => {
     return new Promise((resolve, reject) => {
@@ -117,6 +128,83 @@ db.search_product = (searchterm) => {
                 return reject(error);
             }
             return resolve(product);
+        });
+    });
+};
+
+db.get_all_product = () => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM product', (error, users) => {
+            if (error) {
+                return reject(error);
+            }
+            return resolve(users);
+        });
+    });
+};
+
+db.add_orders = (productid, buyqty, totalprice, buyer, productseller) => {
+    return new Promise((resolve, reject) => {
+        pool.query('INSERT INTO orders (product_id, orders_qty, orders_price, buyer_name, seller_name) VALUES (?, ?, ?, ?, ?)', [productid, buyqty, totalprice, buyer, productseller], (error) => {
+            if (error) {
+                return reject(error);
+            }
+            return resolve();
+        });
+    });
+};
+
+db.deduct_product_qty = (buyqty, buyname) => {
+    return new Promise((resolve, reject) => {
+        pool.query('UPDATE product SET product_qty = product_qty - ? WHERE product_name = ?', [buyqty, buyname], (error) => {
+            if (error) {
+                return reject(error);
+            }
+            return resolve();
+        });
+    });
+};
+
+db.check_order = (idorder) => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM orders WHERE orders_id = ?', [(idorder)], (error, orders) => {
+            if (error) {
+                return reject(error);
+            }
+            return resolve(orders[0]);
+        });
+    });
+};
+
+db.update_status = (status, idorder) => {
+    return new Promise((resolve, reject) => {
+        pool.query('UPDATE orders SET orders_status = ? WHERE orders_id = ?', [status, idorder], (error) => {
+            if (error) {
+                return reject(error);
+            }
+            return resolve();
+        });
+    });
+};
+
+db.add_balance = (balance, idorder) => {
+    return new Promise((resolve, reject) => {
+        pool.query('UPDATE users SET users_balance = users_balance + ? WHERE users_name = ?', [balance, idorder], (error) => {
+            if (error) {
+                return reject(error);
+            }
+            return resolve();
+        });
+    });
+};
+
+db.get_my_order = (ordername) => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM orders WHERE buyer_name = ? OR seller_name = ?', [ordername,ordername], (error, order) => {
+            if (error) {
+                return reject(error);
+            }
+            return resolve(order);
         });
     });
 };

@@ -32,8 +32,8 @@ exports.register = async (req, res, next) => {
         const jsontoken = jsonwebtoken.sign({
             user: user,
         },
-            "inikey", {
-            expiresIn: "30m",
+            process.env.SECRET_KEY, {
+            expiresIn: "10d",
         }
         );
 
@@ -67,8 +67,8 @@ exports.login = async (req, res, next) => {
             const jsontoken = jsonwebtoken.sign({
                 user: user,
             },
-                "inikey", {
-                expiresIn: "30m",
+                process.env.SECRET_KEY, {
+                expiresIn: "10d",
             }
             );
 
@@ -85,5 +85,29 @@ exports.login = async (req, res, next) => {
         }
     } catch (e) {
         console.log(e);
+    }
+};
+
+exports.search_product = async (req, res, next) => {
+    try {
+        const searchterm = req.body.search;
+
+        if (!searchterm) {
+            return res.sendStatus(400);
+        }
+
+        const product = await db.search_product(searchterm)
+
+        res.json({
+            Product: product
+        });
+
+    } catch (e) {
+        res.status(404).json(
+            {
+                status: 404,
+                message: "Product not found",
+            }
+        )
     }
 };

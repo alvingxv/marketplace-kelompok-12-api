@@ -7,6 +7,7 @@ const { verifyToken, verifyTokenAdmin } = require("../middleware/auth_helper")
 
 api.post('/register', public_controller.register);
 api.post('/login', public_controller.login);
+api.post('/searchproduct', public_controller.search_product);
 
 api.use("/admin", verifyTokenAdmin, adminRouter);
 api.use("/user", verifyToken, userRouter);
