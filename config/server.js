@@ -13,11 +13,11 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
-app.get('/', (req, res) => {
-    res.status(200).json({
-        message: "Haloooooo, buka https://gist.github.com/alvingxv/e716f6b922974c2fafe54e2c3cc22b6f buat dokumentasi yaaaa :D"
-    });
-});
+// app.get('/', (req, res) => {
+//     res.status(200).json({
+//         message: "Haloooooo, buka https://gist.github.com/alvingxv/e716f6b922974c2fafe54e2c3cc22b6f buat dokumentasi yaaaa :D"
+//     });
+// });
 
 app.use('/api', api)
 
