@@ -422,13 +422,13 @@ exports.pay_orders = async (req, res, next) => {
             await axios
                 .post(
                     "https://e-money-kelompok-12.herokuapp.com/api/transfer", {
-                        tujuan: numberpiscokku,
-                        amount: orderinfo.orders_price,
-                    }, {
-                        headers: {
-                            Authorization: "Bearer " + tokentransfer,
-                        },
-                    }
+                    tujuan: numberpiscokku,
+                    amount: orderinfo.orders_price,
+                }, {
+                    headers: {
+                        Authorization: "Bearer " + tokentransfer,
+                    },
+                }
                 )
                 .then((response) => {
                     const hasil = response.data;
@@ -496,10 +496,10 @@ exports.pay_orders = async (req, res, next) => {
                 .post(
                     "https://arielaliski.xyz/e-money-kelompok-2/public/buskidicoin/admin/transfer",
                     formData, {
-                        headers: {
-                            Authorization: "Bearer " + tokentransfer,
-                        },
-                    }
+                    headers: {
+                        Authorization: "Bearer " + tokentransfer,
+                    },
+                }
                 )
                 .then((response) => {
                     const hasil = response.data; // => the response payload
@@ -580,15 +580,15 @@ exports.pay_orders = async (req, res, next) => {
             await axios
                 .patch(
                     "https://kecana.herokuapp.com/transferemoneylain ", {
-                        id: idkcn,
-                        nohp: numberpiscokku,
-                        nominaltransfer: orderinfo.orders_price,
-                        emoneytujuan: "Peace Pay"
-                    }, {
-                        headers: {
-                            Authorization: "Bearer " + tokentransfer,
-                        },
-                    }
+                    id: idkcn,
+                    nohp: numberpiscokku,
+                    nominaltransfer: orderinfo.orders_price,
+                    emoneytujuan: "Peace Pay"
+                }, {
+                    headers: {
+                        Authorization: "Bearer " + tokentransfer,
+                    },
+                }
                 )
                 .then((response) => {
                     const hasil = response.data.status; // => the response payload
@@ -647,13 +647,13 @@ exports.pay_orders = async (req, res, next) => {
             await axios
                 .post(
                     "https://gallecoins.herokuapp.com/api/transfer/peacepay ", {
-                        phone_target: numberpiscokku,
-                        amount: orderinfo.orders_price
-                    }, {
-                        headers: {
-                            Authorization: "Bearer " + tokentransfer,
-                        },
-                    }
+                    phone_target: numberpiscokku,
+                    amount: orderinfo.orders_price
+                }, {
+                    headers: {
+                        Authorization: "Bearer " + tokentransfer,
+                    },
+                }
                 )
                 .then((response) => {
                     const hasil = response.data.status; // => the response payload
@@ -710,13 +710,13 @@ exports.pay_orders = async (req, res, next) => {
             await axios
                 .post(
                     "https://e-money-kelompok5.herokuapp.com/cuanind/transfer/peacepay", {
-                        target: numberpiscokku,
-                        amount: orderinfo.orders_price
-                    }, {
-                        headers: {
-                            Authorization: "Bearer " + tokentransfer,
-                        },
-                    }
+                    target: numberpiscokku,
+                    amount: orderinfo.orders_price
+                }, {
+                    headers: {
+                        Authorization: "Bearer " + tokentransfer,
+                    },
+                }
                 )
                 .then((response) => {
                     const hasil = response.data; // => the response payload
@@ -773,14 +773,14 @@ exports.pay_orders = async (req, res, next) => {
             await axios
                 .post(
                     "https://moneyz-kelompok6.herokuapp.com/api/user/transferTo", {
-                        tujuan: numberpiscokku,
-                        amount: orderinfo.orders_price,
-                        emoney: "PeacePay",
-                    }, {
-                        headers: {
-                            Authorization: "Bearer " + tokentransfer,
-                        },
-                    }
+                    tujuan: numberpiscokku,
+                    amount: orderinfo.orders_price,
+                    emoney: "PeacePay",
+                }, {
+                    headers: {
+                        Authorization: "Bearer " + tokentransfer,
+                    },
+                }
                 )
                 .then((response) => {
                     const hasil = response.data; // => the response payload
@@ -836,14 +836,14 @@ exports.pay_orders = async (req, res, next) => {
             await axios
                 .post(
                     "https://payfresh.herokuapp.com/api/user/peacepay", {
-                        tujuan: numberpiscokku,
-                        amount: orderinfo.orders_price,
-                        id: ""
-                    }, {
-                        headers: {
-                            Authorization: "Bearer " + tokentransfer,
-                        },
-                    }
+                    tujuan: numberpiscokku,
+                    amount: orderinfo.orders_price,
+                    id: ""
+                }, {
+                    headers: {
+                        Authorization: "Bearer " + tokentransfer,
+                    },
+                }
                 )
                 .then((response) => {
                     const hasil = response.data;
@@ -909,10 +909,10 @@ exports.pay_orders = async (req, res, next) => {
                 .post(
                     "http://fp-payphone.herokuapp.com/public/api/transfer",
                     formData, {
-                        headers: {
-                            Authorization: "Bearer " + tokentransfer,
-                        },
-                    }
+                    headers: {
+                        Authorization: "Bearer " + tokentransfer,
+                    },
+                }
                 )
                 .then((response) => {
                     const hasil = response.data; // => the response payload
@@ -971,12 +971,12 @@ exports.pay_orders = async (req, res, next) => {
             await axios
                 .post(
                     "https://mypadpay.xyz/padpay/api/coin/peacepay.php", {
-                        email: emaillogin,
-                        password: passwordlogin,
-                        jwt: tokentransfer,
-                        tujuan: numberpiscokku,
-                        jumlah: orderinfo.orders_price,
-                    }
+                    email: emaillogin,
+                    password: passwordlogin,
+                    jwt: tokentransfer,
+                    tujuan: numberpiscokku,
+                    jumlah: orderinfo.orders_price,
+                }
                 )
                 .then((response) => {
 
@@ -1001,6 +1001,9 @@ exports.pay_orders = async (req, res, next) => {
                         return res.send(err);
                     }
                 });
+
+            //! ========================================== ECoin START HERE =====================================
+
         } else if (emoney == "ECoin") {
             const phonelogin = req.body.number;
             const passwordlogin = req.body.password;
@@ -1035,17 +1038,17 @@ exports.pay_orders = async (req, res, next) => {
             await axios
                 .post(
                     "https://ecoin10.my.id/api/transfer", {
-                        amount: orderinfo.orders_price,
-                        dest_emoney: "PeacePay",
-                        phone2: numberpiscokku,
-                        description: ""
-                    },
+                    amount: orderinfo.orders_price,
+                    dest_emoney: "PeacePay",
+                    phone2: numberpiscokku,
+                    description: `Piscokku Payment order_id ${orderinfo.orders_id}`
+                },
                     {
                         headers: {
                             Authorization: "Bearer " + tokentransfer,
                         }
                     }
-                   
+
                 )
                 .then((response) => {
                     const hasil = response.data;
