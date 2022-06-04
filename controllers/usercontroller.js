@@ -1,3 +1,6 @@
+const {
+    CLIENT_IGNORE_SIGPIPE
+} = require("mysql/lib/protocol/constants/client");
 const db = require("../models/db");
 const axios = require("axios").default;
 
@@ -28,13 +31,15 @@ exports.add_product = async (req, res, next) => {
 
         if (!productname || !productprice || !productqty) {
             return res.status(400).json({
-                status: 400, message: "Bad Request"
+                status: 400,
+                message: "Bad Request"
             });
         }
 
         await db.add_product(productname, productprice, productqty, productseller)
         return res.status(200).json({
-            status: 200, message: "Product Added"
+            status: 200,
+            message: "Product Added"
         });
 
 
@@ -60,35 +65,37 @@ exports.update_product = async (req, res, next) => {
 
         if ((!productname) || (!productprice && !productqty)) {
             return res.status(400).json({
-                status: 400, message: "Please Enter Product name and product price or qty"
+                status: 400,
+                message: "Please Enter Product name and product price or qty"
             });
         }
 
         if (productprice && !productqty) {
             await db.update_price(productname, productprice, productseller);
             return res.status(200).json({
-                status: 200, message: "Product Price updated"
+                status: 200,
+                message: "Product Price updated"
             });
         } else if (productqty && !productprice) {
             await db.update_qty(productname, productqty, productseller);
             return res.status(200).json({
-                status: 200, message: "Product Qty updated"
+                status: 200,
+                message: "Product Qty updated"
             });
         } else if (productqty && productprice) {
             await db.update_price(productname, productprice, productseller);
             await db.update_qty(productname, productqty, productseller);
             return res.status(200).json({
-                status: 200, message: "Product Updated"
+                status: 200,
+                message: "Product Updated"
             });
         }
 
     } catch (e) {
-        res.status(409).json(
-            {
-                status: 409,
-                message: "Failed to update",
-            }
-        )
+        res.status(409).json({
+            status: 409,
+            message: "Failed to update",
+        })
     }
 };
 
@@ -101,12 +108,10 @@ exports.get_all_product = async (req, res, next) => {
         });
 
     } catch (e) {
-        res.status(500).json(
-            {
-                status: 500,
-                message: "Server Error",
-            }
-        )
+        res.status(500).json({
+            status: 500,
+            message: "Server Error",
+        })
     }
 };
 
@@ -127,21 +132,17 @@ exports.my_order = async (req, res, next) => {
                 Order: order
             });
         } catch (error) {
-            res.status(500).json(
-                {
-                    status: 500,
-                    message: "errormaszeh",
-                }
-            )
+            res.status(500).json({
+                status: 500,
+                message: "errormaszeh",
+            })
         }
 
     } catch (e) {
-        res.status(500).json(
-            {
-                status: 500,
-                message: "Server Error",
-            }
-        )
+        res.status(500).json({
+            status: 500,
+            message: "Server Error",
+        })
     }
 };
 
@@ -163,12 +164,10 @@ exports.profile = async (req, res, next) => {
         });
 
     } catch (e) {
-        res.status(500).json(
-            {
-                status: 500,
-                message: "Server Error",
-            }
-        )
+        res.status(500).json({
+            status: 500,
+            message: "Server Error",
+        })
     }
 };
 
@@ -188,53 +187,45 @@ exports.seller_confirm = async (req, res, next) => {
         const ordersellername = orderinfo.seller_name;
 
         if (orderinfo == undefined) {
-            return res.status(404).json(
-                {
-                    status: 404, message: "Order Id Not Found"
-                }
-            );
+            return res.status(404).json({
+                status: 404,
+                message: "Order Id Not Found"
+            });
         }
 
         if (sellername != ordersellername) {
-            return res.status(400).json(
-                {
-                    status: 400, message: "This is not your Order"
-                }
-            );
+            return res.status(400).json({
+                status: 400,
+                message: "This is not your Order"
+            });
         }
 
         if (orderinfo.orders_status == "Paid") {
 
             try {
                 await db.update_status("Product has been sent", idorder);
-                return res.status(200).json(
-                    {
-                        status: 200, message: "Confirmation successful (product sent)"
-                    }
-                );
+                return res.status(200).json({
+                    status: 200,
+                    message: "Confirmation successful (product sent)"
+                });
             } catch (e) {
-                res.status(500).json(
-                    {
-                        status: 500,
-                        message: "Server Error",
-                    }
-                )
+                res.status(500).json({
+                    status: 500,
+                    message: "Server Error",
+                })
             }
         } else {
-            return res.status(400).json(
-                {
-                    status: 400, message: "This order hasn't been paid yet"
-                }
-            );
+            return res.status(400).json({
+                status: 400,
+                message: "This order hasn't been paid yet"
+            });
         }
 
     } catch (e) {
-        res.status(500).json(
-            {
-                status: 500,
-                message: "Server Error",
-            }
-        )
+        res.status(500).json({
+            status: 500,
+            message: "Server Error",
+        })
     }
 };
 
@@ -254,19 +245,17 @@ exports.buyer_confirm = async (req, res, next) => {
         const orderbuyername = orderinfo.buyer_name;
 
         if (orderinfo == undefined) {
-            return res.status(404).json(
-                {
-                    status: 404, message: "Order Id Not Found"
-                }
-            );
+            return res.status(404).json({
+                status: 404,
+                message: "Order Id Not Found"
+            });
         }
 
         if (buyername != orderbuyername) {
-            return res.status(400).json(
-                {
-                    status: 400, message: "This is not your Order"
-                }
-            );
+            return res.status(400).json({
+                status: 400,
+                message: "This is not your Order"
+            });
         }
 
         if (orderinfo.orders_status == "Product has been sent") {
@@ -274,40 +263,33 @@ exports.buyer_confirm = async (req, res, next) => {
             try {
                 await db.update_status("Order has been received (done)", idorder);
                 await db.add_balance(orderinfo.orders_price, orderinfo.seller_name)
-                return res.status(200).json(
-                    {
-                        status: 200, message: "Confirmation successful (product received)"
-                    }
-                );
+                return res.status(200).json({
+                    status: 200,
+                    message: "Confirmation successful (product received)"
+                });
             } catch (e) {
-                res.status(500).json(
-                    {
-                        status: 500,
-                        message: "Server Error",
-                    }
-                )
+                res.status(500).json({
+                    status: 500,
+                    message: "Server Error",
+                })
             }
         } else if (orderinfo.orders_status == "Order has been received (done)") {
-            return res.status(400).json(
-                {
-                    status: 400, message: "This order is finished"
-                }
-            );
+            return res.status(400).json({
+                status: 400,
+                message: "This order is finished"
+            });
         } else {
-            return res.status(400).json(
-                {
-                    status: 400, message: "This order hasn't been paid yet"
-                }
-            );
+            return res.status(400).json({
+                status: 400,
+                message: "This order hasn't been paid yet"
+            });
         }
 
     } catch (e) {
-        res.status(500).json(
-            {
-                status: 500,
-                message: "Server Error",
-            }
-        )
+        res.status(500).json({
+            status: 500,
+            message: "Server Error",
+        })
     }
 };
 
@@ -326,14 +308,16 @@ exports.buy_product = async (req, res, next) => {
 
         if ((!buyname && !buyqty)) {
             return res.status(400).json({
-                status: 400, message: "Please Enter Product name and quantity"
+                status: 400,
+                message: "Please Enter Product name and quantity"
             });
         }
 
         const product = await db.check_productname(buyname)
         if (product === undefined) {
             return res.status(404).json({
-                status: 404, message: "Product Not Found"
+                status: 404,
+                message: "Product Not Found"
             });
         }
 
@@ -347,7 +331,8 @@ exports.buy_product = async (req, res, next) => {
         if (buyqty > productqty) {
             console.log("stock habis");
             return res.status(410).json({
-                status: 410, message: "Not Enough Stock"
+                status: 410,
+                message: "Not Enough Stock"
             });
         }
 
@@ -355,24 +340,21 @@ exports.buy_product = async (req, res, next) => {
             await db.add_orders(productid, buyqty, totalprice, buyer, productseller)
             await db.deduct_product_qty(buyqty, buyname)
             return res.status(410).json({
-                status: 200, message: "Product Ordered, Waiting for Payment"
+                status: 200,
+                message: "Product Ordered, Waiting for Payment"
             });
         } catch (error) {
-            res.status(500).json(
-                {
-                    status: 500,
-                    message: "Failed to Buy",
-                }
-            )
+            res.status(500).json({
+                status: 500,
+                message: "Failed to Buy",
+            })
         }
 
     } catch (e) {
-        res.status(500).json(
-            {
-                status: 500,
-                message: "Server Error",
-            }
-        )
+        res.status(500).json({
+            status: 500,
+            message: "Server Error",
+        })
     }
 };
 
@@ -391,26 +373,23 @@ exports.pay_orders = async (req, res, next) => {
         const orderinfo = await db.check_order(idorder);
 
         if (orderinfo == undefined) {
-            return res.status(404).json(
-                {
-                    status: 404, message: "Order Id Not Found"
-                }
-            );
+            return res.status(404).json({
+                status: 404,
+                message: "Order Id Not Found"
+            });
         }
         if (orderinfo.orders_status != "Waiting for Payment") {
-            return res.status(400).json(
-                {
-                    status: 400, message: "This order Already Paid"
-                }
-            );
+            return res.status(400).json({
+                status: 400,
+                message: "This order Already Paid"
+            });
         }
 
         if (orderinfo.buyer_name != tokendata.user.users_name) {
-            return res.status(404).json(
-                {
-                    status: 404, message: "This is not your order"
-                }
-            );
+            return res.status(404).json({
+                status: 404,
+                message: "This is not your order"
+            });
         }
         //! ================== PEACEPAY =====================
         if (emoney == "PeacePay") {
@@ -418,7 +397,8 @@ exports.pay_orders = async (req, res, next) => {
             const passwordlogin = req.body.password;
             if (!passwordlogin || !numberlogin) {
                 return res.status(400).json({
-                    status: 400, message: 'Insert "number" and "password" to log in to PeacePay'
+                    status: 400,
+                    message: 'Insert "number" and "password" to log in to PeacePay'
                 });
             }
             const resp = await axios
@@ -441,12 +421,10 @@ exports.pay_orders = async (req, res, next) => {
 
             await axios
                 .post(
-                    "https://e-money-kelompok-12.herokuapp.com/api/transfer",
-                    {
+                    "https://e-money-kelompok-12.herokuapp.com/api/transfer", {
                         tujuan: numberpiscokku,
                         amount: orderinfo.orders_price,
-                    },
-                    {
+                    }, {
                         headers: {
                             Authorization: "Bearer " + tokentransfer,
                         },
@@ -457,17 +435,15 @@ exports.pay_orders = async (req, res, next) => {
                     const status = hasil.status
                     if (status == 200) {
                         db.update_status("Paid", idorder);
-                        return res.status(200).json(
-                            {
-                                status: 200, message: "Payment Success"
-                            }
-                        );
+                        return res.status(200).json({
+                            status: 200,
+                            message: "Payment Success"
+                        });
                     } else {
-                        return res.status(400).json(
-                            {
-                                status: 400, message: "Payment Failed"
-                            }
-                        );
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Payment Failed"
+                        });
                     }
                 })
                 .catch((error) => {
@@ -483,7 +459,8 @@ exports.pay_orders = async (req, res, next) => {
             const numberlogin = req.body.number;
             if (!passwordlogin || !numberlogin || !usernamelogin) {
                 return res.status(400).json({
-                    status: 400, message: 'Insert "username", "password" and "number" to log in to Buski Coins'
+                    status: 400,
+                    message: 'Insert "username", "password" and "number" to log in to Buski Coins'
                 });
             }
             var formData = new URLSearchParams();
@@ -496,11 +473,10 @@ exports.pay_orders = async (req, res, next) => {
                 )
                 .catch((error) => {
                     if (error.response) {
-                        return res.status(404).json(
-                            {
-                                status: 404, message: "Login to Buski Coins Failed"
-                            }
-                        );
+                        return res.status(404).json({
+                            status: 404,
+                            message: "Login to Buski Coins Failed"
+                        });
                     }
                 });
             try {
@@ -519,8 +495,7 @@ exports.pay_orders = async (req, res, next) => {
             await axios
                 .post(
                     "https://arielaliski.xyz/e-money-kelompok-2/public/buskidicoin/admin/transfer",
-                    formData,
-                    {
+                    formData, {
                         headers: {
                             Authorization: "Bearer " + tokentransfer,
                         },
@@ -530,18 +505,16 @@ exports.pay_orders = async (req, res, next) => {
                     const hasil = response.data; // => the response payload
                     if (hasil.status == 201) {
                         db.update_status("Paid", idorder);
-                        return res.status(200).json(
-                            {
-                                status: 200, message: "Payment Success"
-                            }
-                        );
+                        return res.status(200).json({
+                            status: 200,
+                            message: "Payment Success"
+                        });
 
                     } else {
-                        return res.status(400).json(
-                            {
-                                status: 400, message: "Payment Failed"
-                            }
-                        );
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Payment Failed"
+                        });
                     }
 
                 })
@@ -559,7 +532,8 @@ exports.pay_orders = async (req, res, next) => {
             const passwordlogin = req.body.password;
             if (!passwordlogin || !emaillogin) {
                 return res.status(400).json({
-                    status: 400, message: 'Insert "email" and "password" to log in to KCN Pay'
+                    status: 400,
+                    message: 'Insert "email" and "password" to log in to KCN Pay'
                 });
             }
             const resp = await axios
@@ -569,11 +543,10 @@ exports.pay_orders = async (req, res, next) => {
                 })
                 .catch((error) => {
                     if (error.response) {
-                        return res.status(404).json(
-                            {
-                                status: 404, message: "Login to KCN Pay Failed"
-                            }
-                        );
+                        return res.status(404).json({
+                            status: 404,
+                            message: "Login to KCN Pay Failed"
+                        });
                     }
                 });
             try {
@@ -591,11 +564,10 @@ exports.pay_orders = async (req, res, next) => {
                 })
                 .catch((error) => {
                     if (error.response) {
-                        return res.status(404).json(
-                            {
-                                status: 404, message: "Error"
-                            }
-                        );
+                        return res.status(404).json({
+                            status: 404,
+                            message: "Error"
+                        });
                     }
                 });
             try {
@@ -607,14 +579,12 @@ exports.pay_orders = async (req, res, next) => {
 
             await axios
                 .patch(
-                    "https://kecana.herokuapp.com/transferemoneylain ",
-                    {
+                    "https://kecana.herokuapp.com/transferemoneylain ", {
                         id: idkcn,
                         nohp: numberpiscokku,
                         nominaltransfer: orderinfo.orders_price,
                         emoneytujuan: "Peace Pay"
-                    },
-                    {
+                    }, {
                         headers: {
                             Authorization: "Bearer " + tokentransfer,
                         },
@@ -624,19 +594,16 @@ exports.pay_orders = async (req, res, next) => {
                     const hasil = response.data.status; // => the response payload
                     if (hasil == 200) {
                         db.update_status("Paid", idorder);
-                        return res.status(200).json(
-                            {
-                                status: 200, message: "Payment Success"
-                            }
-                        );
+                        return res.status(200).json({
+                            status: 200,
+                            message: "Payment Success"
+                        });
 
-                    }
-                    else {
-                        return res.status(400).json(
-                            {
-                                status: 400, message: "Payment Failed"
-                            }
-                        );
+                    } else {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Payment Failed"
+                        });
                     }
                 })
                 .catch((error) => {
@@ -653,7 +620,8 @@ exports.pay_orders = async (req, res, next) => {
             const passwordlogin = req.body.password;
             if (!passwordlogin || !usernamelogin) {
                 return res.status(400).json({
-                    status: 400, message: 'Insert "username" and "password" to log in to Gallecoins'
+                    status: 400,
+                    message: 'Insert "username" and "password" to log in to Gallecoins'
                 });
             }
             const resp = await axios
@@ -663,11 +631,10 @@ exports.pay_orders = async (req, res, next) => {
                 })
                 .catch((error) => {
                     if (error.response) {
-                        return res.status(404).json(
-                            {
-                                status: 404, message: "Login to CuanIND Failed"
-                            }
-                        );
+                        return res.status(404).json({
+                            status: 404,
+                            message: "Login to CuanIND Failed"
+                        });
                     }
                 });
             try {
@@ -679,12 +646,10 @@ exports.pay_orders = async (req, res, next) => {
 
             await axios
                 .post(
-                    "https://gallecoins.herokuapp.com/api/transfer/peacepay ",
-                    {
+                    "https://gallecoins.herokuapp.com/api/transfer/peacepay ", {
                         phone_target: numberpiscokku,
                         amount: orderinfo.orders_price
-                    },
-                    {
+                    }, {
                         headers: {
                             Authorization: "Bearer " + tokentransfer,
                         },
@@ -694,18 +659,15 @@ exports.pay_orders = async (req, res, next) => {
                     const hasil = response.data.status; // => the response payload
                     if (hasil == "1") {
                         db.update_status("Paid", idorder);
-                        return res.status(200).json(
-                            {
-                                status: 200, message: "Payment Success"
-                            }
-                        );
-                    }
-                    else {
-                        return res.status(400).json(
-                            {
-                                status: 400, message: "Payment Failed"
-                            }
-                        );
+                        return res.status(200).json({
+                            status: 200,
+                            message: "Payment Success"
+                        });
+                    } else {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Payment Failed"
+                        });
                     }
                 })
                 .catch((error) => {
@@ -721,7 +683,8 @@ exports.pay_orders = async (req, res, next) => {
             const passwordlogin = req.body.password;
             if (!passwordlogin || !numberlogin) {
                 return res.status(400).json({
-                    status: 400, message: 'Insert "number" and "password" to log in to CuanIND'
+                    status: 400,
+                    message: 'Insert "number" and "password" to log in to CuanIND'
                 });
             }
             const resp = await axios
@@ -731,11 +694,10 @@ exports.pay_orders = async (req, res, next) => {
                 })
                 .catch((error) => {
                     if (error.response) {
-                        return res.status(404).json(
-                            {
-                                status: 404, message: "Login to CuanIND Failed"
-                            }
-                        );
+                        return res.status(404).json({
+                            status: 404,
+                            message: "Login to CuanIND Failed"
+                        });
                     }
                 });
             try {
@@ -747,12 +709,10 @@ exports.pay_orders = async (req, res, next) => {
 
             await axios
                 .post(
-                    "https://e-money-kelompok5.herokuapp.com/cuanind/transfer/peacepay",
-                    {
+                    "https://e-money-kelompok5.herokuapp.com/cuanind/transfer/peacepay", {
                         target: numberpiscokku,
                         amount: orderinfo.orders_price
-                    },
-                    {
+                    }, {
                         headers: {
                             Authorization: "Bearer " + tokentransfer,
                         },
@@ -762,18 +722,15 @@ exports.pay_orders = async (req, res, next) => {
                     const hasil = response.data; // => the response payload
                     if (hasil == "berhasil") {
                         db.update_status("Paid", idorder);
-                        return res.status(200).json(
-                            {
-                                status: 200, message: "Payment Success"
-                            }
-                        );
-                    }
-                    else {
-                        return res.status(400).json(
-                            {
-                                status: 400, message: "Payment Failed"
-                            }
-                        );
+                        return res.status(200).json({
+                            status: 200,
+                            message: "Payment Success"
+                        });
+                    } else {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Payment Failed"
+                        });
                     }
                 })
                 .catch((error) => {
@@ -789,7 +746,8 @@ exports.pay_orders = async (req, res, next) => {
             const passwordlogin = req.body.password;
             if (!passwordlogin || !numberlogin) {
                 return res.status(400).json({
-                    status: 400, message: 'Insert "number" and "password" to log in to MoneyZ'
+                    status: 400,
+                    message: 'Insert "number" and "password" to log in to MoneyZ'
                 });
             }
 
@@ -800,11 +758,10 @@ exports.pay_orders = async (req, res, next) => {
                 })
                 .catch((error) => {
                     if (error.response) {
-                        return res.status(404).json(
-                            {
-                                status: 404, message: "Login to MoneyZ Failed"
-                            }
-                        );
+                        return res.status(404).json({
+                            status: 404,
+                            message: "Login to MoneyZ Failed"
+                        });
                     }
                 });
             try {
@@ -815,13 +772,11 @@ exports.pay_orders = async (req, res, next) => {
             }
             await axios
                 .post(
-                    "https://moneyz-kelompok6.herokuapp.com/api/user/transferTo",
-                    {
+                    "https://moneyz-kelompok6.herokuapp.com/api/user/transferTo", {
                         tujuan: numberpiscokku,
                         amount: orderinfo.orders_price,
                         emoney: "PeacePay",
-                    },
-                    {
+                    }, {
                         headers: {
                             Authorization: "Bearer " + tokentransfer,
                         },
@@ -831,18 +786,15 @@ exports.pay_orders = async (req, res, next) => {
                     const hasil = response.data; // => the response payload
                     if (hasil.status == 200) {
                         db.update_status("Paid", idorder);
-                        return res.status(200).json(
-                            {
-                                status: 200, message: "Payment Success"
-                            }
-                        );
-                    }
-                    else {
-                        return res.status(400).json(
-                            {
-                                status: 400, message: "Payment Failed"
-                            }
-                        );
+                        return res.status(200).json({
+                            status: 200,
+                            message: "Payment Success"
+                        });
+                    } else {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Payment Failed"
+                        });
                     }
                 })
                 .catch((error) => {
@@ -857,7 +809,8 @@ exports.pay_orders = async (req, res, next) => {
             const passwordlogin = req.body.password;
             if (!passwordlogin || !emaillogin) {
                 return res.status(400).json({
-                    status: 400, message: 'Insert "email" and "password" to log in to Payfresh'
+                    status: 400,
+                    message: 'Insert "email" and "password" to log in to Payfresh'
                 });
             }
             const resp = await axios
@@ -867,11 +820,10 @@ exports.pay_orders = async (req, res, next) => {
                 })
                 .catch((error) => {
                     if (error.response) {
-                        return res.status(404).json(
-                            {
-                                status: 404, message: "Login to Payfresh Failed"
-                            }
-                        );
+                        return res.status(404).json({
+                            status: 404,
+                            message: "Login to Payfresh Failed"
+                        });
                     }
                 });
             try {
@@ -883,13 +835,11 @@ exports.pay_orders = async (req, res, next) => {
 
             await axios
                 .post(
-                    "https://payfresh.herokuapp.com/api/user/peacepay",
-                    {
+                    "https://payfresh.herokuapp.com/api/user/peacepay", {
                         tujuan: numberpiscokku,
                         amount: orderinfo.orders_price,
                         id: ""
-                    },
-                    {
+                    }, {
                         headers: {
                             Authorization: "Bearer " + tokentransfer,
                         },
@@ -900,18 +850,15 @@ exports.pay_orders = async (req, res, next) => {
                     const status = hasil.status
                     if (status == 200) {
                         db.update_status("Paid", idorder);
-                        return res.status(200).json(
-                            {
-                                status: 200, message: "Payment Success"
-                            }
-                        );
-                    }
-                    else {
-                        return res.status(400).json(
-                            {
-                                status: 400, message: "Payment Failed"
-                            }
-                        );
+                        return res.status(200).json({
+                            status: 200,
+                            message: "Payment Success"
+                        });
+                    } else {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Payment Failed"
+                        });
                     }
                 })
                 .catch((error) => {
@@ -927,7 +874,8 @@ exports.pay_orders = async (req, res, next) => {
 
             if (!passwordlogin || !numberlogin) {
                 return res.status(400).json({
-                    status: 400, message: 'Insert "number" and "password" to log in to PayPhone'
+                    status: 400,
+                    message: 'Insert "number" and "password" to log in to PayPhone'
                 });
             }
             var formData = new URLSearchParams();
@@ -940,11 +888,10 @@ exports.pay_orders = async (req, res, next) => {
                 )
                 .catch((error) => {
                     if (error.response) {
-                        return res.status(404).json(
-                            {
-                                status: 404, message: "Login to PayPhone Failed"
-                            }
-                        );
+                        return res.status(404).json({
+                            status: 404,
+                            message: "Login to PayPhone Failed"
+                        });
                     }
                 });
             try {
@@ -961,8 +908,7 @@ exports.pay_orders = async (req, res, next) => {
             await axios
                 .post(
                     "http://fp-payphone.herokuapp.com/public/api/transfer",
-                    formData,
-                    {
+                    formData, {
                         headers: {
                             Authorization: "Bearer " + tokentransfer,
                         },
@@ -972,18 +918,15 @@ exports.pay_orders = async (req, res, next) => {
                     const hasil = response.data; // => the response payload
                     if (hasil.status == 200) {
                         db.update_status("Paid", idorder);
-                        return res.status(200).json(
-                            {
-                                status: 200, message: "Payment Success"
-                            }
-                        );
-                    }
-                    else {
-                        return res.status(400).json(
-                            {
-                                status: 400, message: "Payment Failed"
-                            }
-                        );
+                        return res.status(200).json({
+                            status: 200,
+                            message: "Payment Success"
+                        });
+                    } else {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Payment Failed"
+                        });
                     }
 
                 })
@@ -1000,7 +943,8 @@ exports.pay_orders = async (req, res, next) => {
 
             if (!passwordlogin || !emaillogin) {
                 return res.status(400).json({
-                    status: 400, message: 'Insert "email" and "password" to log in to PadPay'
+                    status: 400,
+                    message: 'Insert "email" and "password" to log in to PadPay'
                 });
             }
 
@@ -1011,11 +955,10 @@ exports.pay_orders = async (req, res, next) => {
                 })
                 .catch((error) => {
                     if (error.response) {
-                        return res.status(404).json(
-                            {
-                                status: 404, message: "Login to Payfresh Failed"
-                            }
-                        );
+                        return res.status(404).json({
+                            status: 404,
+                            message: "Login to Payfresh Failed"
+                        });
                     }
                 });
             try {
@@ -1027,8 +970,7 @@ exports.pay_orders = async (req, res, next) => {
 
             await axios
                 .post(
-                    "https://mypadpay.xyz/padpay/api/coin/peacepay.php",
-                    {
+                    "https://mypadpay.xyz/padpay/api/coin/peacepay.php", {
                         email: emaillogin,
                         password: passwordlogin,
                         jwt: tokentransfer,
@@ -1042,18 +984,15 @@ exports.pay_orders = async (req, res, next) => {
                     const status = hasil.status
                     if (hasil == `{"status":200,"msg":"Transfer berhasil dilakukan."}{"msg":"transfer Successfully","status":200}{"msg":"Record Insert Successfully to history","status":200}`) {
                         db.update_status("Paid", idorder);
-                        return res.status(200).json(
-                            {
-                                status: 200, message: "Payment Success"
-                            }
-                        );
-                    }
-                    else {
-                        return res.status(400).json(
-                            {
-                                status: 400, message: "Payment Failed"
-                            }
-                        );
+                        return res.status(200).json({
+                            status: 200,
+                            message: "Payment Success"
+                        });
+                    } else {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Payment Failed"
+                        });
                     }
                 })
                 .catch((error) => {
@@ -1063,15 +1002,79 @@ exports.pay_orders = async (req, res, next) => {
                     }
                 });
         } else if (emoney == "ECoin") {
+            const phonelogin = req.body.number;
+            const passwordlogin = req.body.password;
 
+            if (!passwordlogin || !phonelogin) {
+                return res.status(400).json({
+                    status: 400,
+                    message: 'Insert "email" and "password" to log in to ECoin'
+                });
+            }
+
+            const resp = await axios
+                .post("https://ecoin10.my.id/api/masuk", {
+                    phone: phonelogin,
+                    password: passwordlogin,
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        return res.status(404).json({
+                            status: 404,
+                            message: "Login to ECoin Failed"
+                        });
+                    }
+                });
+            try {
+                tokentransfer = resp.data.accessToken;
+            } catch (error) {
+                console.log("error");
+                return;
+            }
+
+            await axios
+                .post(
+                    "https://ecoin10.my.id/api/transfer", {
+                        amount: orderinfo.orders_price,
+                        dest_emoney: "PeacePay",
+                        phone2: numberpiscokku,
+                        description: ""
+                    },
+                    {
+                        headers: {
+                            Authorization: "Bearer " + tokentransfer,
+                        }
+                    }
+                   
+                )
+                .then((response) => {
+                    const hasil = response.data;
+                    const status = hasil.status
+                    if (status == 200) {
+                        db.update_status("Paid", idorder);
+                        return res.status(200).json({
+                            status: 200,
+                            message: "Payment Success"
+                        });
+                    } else {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Payment Failed"
+                        });
+                    }
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        const err = error.response.data; // => the response payload
+                        return res.send(err);
+                    }
+                });
 
         } else if (emoney == "Talangin") {
 
-        }
-        else {
+        } else {
             return res.status(400).json({
-                message:
-                    "Emoney Tidak tersedia, Coba ulang dengan nama Emoney yang benar (case sensitive)",
+                message: "Emoney Tidak tersedia, Coba ulang dengan nama Emoney yang benar (case sensitive)",
                 daftarEmoney: [
                     "Buski Coins",
                     "KCN Pay",
