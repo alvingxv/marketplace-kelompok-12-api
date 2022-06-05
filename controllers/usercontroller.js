@@ -1074,6 +1074,85 @@ exports.pay_orders = async (req, res, next) => {
                 });
 
         } else if (emoney == "Talangin") {
+            const emaillogin = req.body.email;
+            const passwordlogin = req.body.password;
+
+            if (!passwordlogin || !emaillogin) {
+                return res.status(400).json({
+                    status: 400,
+                    message: 'Insert "email" and "password" to log in to ECoin'
+                });
+            }
+
+            const resp = await axios
+                .post("https://e-money-kelomok-11.000webhostapp.com/api/login.php", {
+                    email: emaillogin,
+                    password: passwordlogin,
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        return res.status(404).json({
+                            status: 404,
+                            message: "Login to Talangin Failed"
+                        });
+                    }
+                });
+            try {
+                tokentransfer = resp.data.jwt;
+            } catch (error) {
+                console.log("error");
+                return;
+            }
+
+            const resp2 = await axios
+                .post("https://e-money-kelomok-11.000webhostapp.com/api/validatetoken.php", {
+                    jwt: tokentransfer
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        return res.status(404).json({
+                            status: 404,
+                            message: "Error"
+                        });
+                    }
+                });
+            try {
+                phonepengirim = resp2.data.data.phone;
+            } catch (error) {
+                console.log("error");
+                return;
+            }
+
+            await axios
+                .post(
+                    "https://e-money-kelomok-11.000webhostapp.com/api/transferin.php", {
+                    jwt: tokentransfer,
+                    pengirim: phonepengirim,
+                    penerima: numberpiscokku,
+                    emoney: "PeacePay",
+                    jumlah: orderinfo.orders_price
+                })
+                .then((response) => {
+                    const hasil = response.data;
+                    if (hasil.includes(`{"massage":"Transfer Successfull.","data":[{"nama":"PeacePay"`)) {
+                        db.update_status("Paid", idorder);
+                        return res.status(200).json({
+                            status: 200,
+                            message: "Payment Success"
+                        });
+                    } else {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Payment Failed"
+                        });
+                    }
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        const err = error.response.data; // => the response payload
+                        return res.send(err);
+                    }
+                });
 
         } else {
             return res.status(400).json({
