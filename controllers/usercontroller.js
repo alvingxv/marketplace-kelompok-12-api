@@ -837,8 +837,7 @@ exports.pay_orders = async (req, res, next) => {
                 .post(
                     "https://payfresh.herokuapp.com/api/user/peacepay", {
                     tujuan: numberpiscokku,
-                    amount: orderinfo.orders_price,
-                    id: ""
+                    amount: orderinfo.orders_price
                 }, {
                     headers: {
                         Authorization: "Bearer " + tokentransfer,
