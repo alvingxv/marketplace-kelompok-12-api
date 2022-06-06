@@ -12,5 +12,6 @@ userRouter.get('/myorder', user_controller.my_order);
 userRouter.post('/pay', user_controller.pay_orders);
 userRouter.post('/sellerconfirm', user_controller.seller_confirm);
 userRouter.post('/buyerconfirm', user_controller.buyer_confirm);
+userRouter.post('/withdraw', user_controller.withdraw_funds);
 
 module.exports = userRouter;

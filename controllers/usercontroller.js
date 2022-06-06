@@ -171,6 +171,197 @@ exports.profile = async (req, res, next) => {
     }
 };
 
+exports.withdraw_funds = async (req, res, next) => {
+    try {
+        const authHeader = req.headers["authorization"];
+        const token = authHeader && authHeader.split(" ")[1];
+
+        const tokenDecodablePart = token.split(".")[1];
+        const decoded = Buffer.from(tokenDecodablePart, "base64").toString();
+        var tokendata = JSON.parse(decoded);
+
+        const amount = req.body.amount;
+        const emoney = req.body.emoney;
+        const tujuan = req.body.tujuan;
+        const name = tokendata.user.users_name;
+        const user = await db.get_user_by_name(tokendata.user.users_name)
+        var url;
+
+        if (!amount || !emoney || !tujuan) {
+            return res.status(400).json({
+                status: 400,
+                message: "Please Enter amount withdraw, destination and emoney"
+            });
+        }
+
+        if (amount > user.users_balance || amount < 0) {
+            return res.status(400).json({
+                status: 400,
+                message: "You don't have enough balance"
+            });
+        }
+
+        if (emoney == "PeacePay") {
+            const resp = await axios
+                .post("https://e-money-kelompok-12.herokuapp.com/api/login", {
+                    number: "082133453710",
+                    password: "piscokku"
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        const err = error.response.data; // => the response payload
+                        res.send(err);
+                        return;
+                    }
+                });
+            try {
+                tokentransfer = resp.data.token;
+            } catch (error) {
+                console.log("error");
+                return;
+            }
+
+            await axios
+                .post(
+                    "https://e-money-kelompok-12.herokuapp.com/api/transfer", {
+                    tujuan: tujuan,
+                    amount: amount,
+                }, {
+                    headers: {
+                        Authorization: "Bearer " + tokentransfer,
+                    },
+                }
+                )
+                .then((response) => {
+                    const hasil = response.data;
+                    const status = hasil.status
+                    if (status == 200) {
+                        db.deduct_funds(amount, name);
+                        res.status(200).json({
+                            status: 200,
+                            message: "Withdraw Success"
+                        });
+                        return;
+                    } else {
+                        res.status(400).json({
+                            status: 400,
+                            message: "Withdraw Failed"
+                        });
+                        return;
+                    }
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        const err = error.response.data; // => the response payload
+                        return res.send(err);
+                    }
+                });
+
+        } else if (emoney == "Buski Coins") {
+            url = "buskidicoin";
+        } else if (emoney == "KCN Pay") {
+            url = "kcnpay";
+        } else if (emoney == "Gallecoins") {
+            url = "gallecoins";
+        } else if (emoney == "CuanIND") {
+            url = "cuanind";
+        } else if (emoney == "MoneyZ") {
+            url = "moneyz";
+        } else if (emoney == "Payfresh") {
+            url = "payfresh";
+        } else if (emoney == "PadPay") {
+            url = "padpay";
+        } else if (emoney == "PayPhone") {
+            url = "payphone";
+        } else if (emoney == "ECoin") {
+            url = "ecoin";
+        } else if (emoney == "Talangin") {
+            url = "talangin";
+        } else {
+            return res.status(400).json({
+                message: "Emoney Tidak tersedia, Coba ulang dengan nama Emoney yang benar (case sensitive)",
+                daftarEmoney: [
+                    "Buski Coins",
+                    "KCN Pay",
+                    "Gallecoins",
+                    "CuanIND",
+                    "Payfresh",
+                    "MoneyZ",
+                    "PadPay",
+                    "PayPhone",
+                    "ECoin",
+                    "Talangin",
+                    "PeacePay",
+                ],
+            });
+        }
+        try {
+            const resp = await axios
+                .post("https://e-money-kelompok-12.herokuapp.com/api/login", {
+                    number: "082133453710",
+                    password: "piscokku"
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        const err = error.response.data; // => the response payload
+                        return res.send(err);
+                    }
+                });
+            try {
+                tokentransfer = resp.data.token;
+            } catch (error) {
+                console.log("error");
+                return;
+            }
+
+            await axios
+                .post(
+                    `https://e-money-kelompok-12.herokuapp.com/api/${url}`, {
+                    tujuan: tujuan,
+                    amount: amount,
+                }, {
+                    headers: {
+                        Authorization: "Bearer " + tokentransfer,
+                    },
+                })
+                .then((response) => {
+                    const hasil = response.data;
+                    const status = hasil.status
+                    if (status == 200) {
+                        db.deduct_funds(amount, name);
+                        return res.status(200).json({
+                            status: 200,
+                            message: "Withdraw Success"
+                        });
+                    } else {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Withdraw Failed"
+                        });
+                    }
+                })
+                .catch((error) => {
+                    if (error) {
+                        const err = error.response.data; // => the response payload
+                        res.send(err);
+                        return;
+                    }
+                });
+        } catch (error) {
+            console.log(error);
+        }
+
+
+
+    } catch (e) {
+        res.status(500).json({
+            status: 500,
+            message: "Server Error",
+        })
+        return;
+    }
+};
+
 exports.seller_confirm = async (req, res, next) => {
     try {
         const authHeader = req.headers["authorization"];

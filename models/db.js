@@ -209,4 +209,15 @@ db.get_my_order = (ordername) => {
     });
 };
 
+db.deduct_funds = (balance, name) => {
+    return new Promise((resolve, reject) => {
+        pool.query('UPDATE users SET users_balance = users_balance - ? WHERE users_name = ?', [balance, name], (error) => {
+            if (error) {
+                return reject(error);
+            }
+            return resolve();
+        });
+    });
+};
+
 module.exports = db
