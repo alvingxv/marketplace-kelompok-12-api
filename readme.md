@@ -450,3 +450,35 @@ Menggunakan autentikasi User
 }
 ```
 <br>
+
+## **Withdraw Funds**
+
+### **Method**
+`POST`
+
+### **Endpoint**
+`/user/withdraw`
+
+### **Auth**
+Menggunakan autentikasi User
+
+### **Parameter**
+`{amount, emoney, tujuan}`
+
+### **Contoh *Payload***
+```json
+{
+    "amount": "1000",
+    "emoney": "PeacePay",
+    "tujuan": "123"
+}
+```
+
+### **Response**
+```json
+{
+    "status": 200,
+    "message": "Withdraw Success"
+}
+```
+<br>
